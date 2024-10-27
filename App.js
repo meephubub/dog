@@ -1,9 +1,10 @@
-import { Camera, CameraType } from 'expo-camera';
-import { FaceDetector } from 'expo-face-detector';
-import * as MediaLibrary from 'expo-media-library';
-import { StatusBar } from 'expo-status-bar';
-import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+const { Camera, CameraType } = require('expo-camera');
+const { FaceDetector } = require('expo-face-detector');
+const MediaLibrary = require('expo-media-library');
+const { StatusBar } = require('expo-status-bar');
+const React = require('react');
+const { useState, useRef, useEffect } = React;
+const { StyleSheet, Text, TouchableOpacity, View, Image } = require('react-native');
 
 const App = () => {
   const [type, setType] = useState(CameraType.back);
