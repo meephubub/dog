@@ -16,7 +16,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.dogcamera.app"
+      "bundleIdentifier": "com.dogcamera.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to your camera to capture photos."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -40,13 +43,15 @@
           "isAccessMediaLocationEnabled": true
         }
       ],
-      "expo-face-detector"
+      [
+        "expo-face-detector",
+        {
+          "mode": "fast",
+          "detectLandmarks": "all",
+          "runClassifications": "all"
+        }
+      ]
     ],
-    "ios": {
-      "infoPlist": {
-        "NSCameraUsageDescription": "This app needs access to your camera to capture photos."
-      }
-    },
     "web": {
       "favicon": "./assets/favicon.png"
     }
