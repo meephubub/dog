@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "DogCameraApp",
-    "slug": "DogCameraApp",
+    "name": "dog-camera-app",
+    "slug": "dog-camera-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,15 +11,40 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "infoPlist": {
-        "NSCameraUsageDescription": "This app needs access to your camera to capture photos."
-      }
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dogcamera.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.dogcamera.app"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
+      "expo-face-detector"
+    ],
+    "ios": {
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to your camera to capture photos."
       }
     },
     "web": {

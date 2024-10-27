@@ -1,12 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
-import { Camera } from 'expo-camera';
-import * as FaceDetector from 'expo-face-detector';
+import { Camera, CameraType } from 'expo-camera';
+import { FaceDetector } from 'expo-face-detector';
 import * as MediaLibrary from 'expo-media-library';
+import { StatusBar } from 'expo-status-bar';
+import React, { useState, useRef, useEffect } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 
-export default function App() {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+const App = () => {
+  const [type, setType] = useState(CameraType.back);
+  const [permission, setPermission] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [lastPhoto, setLastPhoto] = useState(null);
   const cameraRef = useRef(null);
@@ -15,20 +16,16 @@ export default function App() {
     (async () => {
       const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
       const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync();
-      setHasPermission(cameraStatus === 'granted' && mediaStatus === 'granted');
+      setPermission(cameraStatus === 'granted' && mediaStatus === 'granted');
     })();
   }, []);
 
   const handleFacesDetected = ({ faces }) => {
     if (isProcessing) return;
 
-    // Check if any faces are detected and looking at the camera
     const dogFace = faces.find(face => {
-      // Looking straight ahead if yaw is close to 0
       const isLookingAtCamera = Math.abs(face.yawAngle) < 10;
-      // Basic check for probable dog face based on proportions
       const isProbablyDog = face.bounds.size.width / face.bounds.size.height > 1.2;
-      
       return isLookingAtCamera && isProbablyDog;
     });
 
@@ -45,10 +42,8 @@ export default function App() {
       const photo = await cameraRef.current.takePictureAsync();
       setLastPhoto(photo.uri);
       
-      // Save to camera roll
       await MediaLibrary.saveToLibraryAsync(photo.uri);
       
-      // Wait a bit before allowing next photo
       setTimeout(() => {
         setIsProcessing(false);
       }, 2000);
@@ -58,15 +53,25 @@ export default function App() {
     }
   };
 
-  if (hasPermission === null) {
-    return <View style={styles.container}><Text>Requesting permissions...</Text></View>;
+  if (permission === null) {
+    return (
+      <View style={styles.container}>
+        <Text>Requesting permissions...</Text>
+      </View>
+    );
   }
-  if (hasPermission === false) {
-    return <View style={styles.container}><Text>No access to camera</Text></View>;
+
+  if (permission === false) {
+    return (
+      <View style={styles.container}>
+        <Text>No access to camera</Text>
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
+      <StatusBar style="auto" />
       <Camera
         ref={cameraRef}
         style={styles.camera}
@@ -84,11 +89,7 @@ export default function App() {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back
-              );
+              setType(type === CameraType.back ? CameraType.front : CameraType.back);
             }}>
             <Text style={styles.text}>Flip Camera</Text>
           </TouchableOpacity>
@@ -111,7 +112,7 @@ export default function App() {
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -166,3 +167,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 });
+
+export default App;
